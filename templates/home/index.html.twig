@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .all-wrapper {
+            margin: 1em auto;
+            width: 98%;
+            font: 18px/1.5 sans-serif;
+        }
+
+        .all-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px;
+        }
+
+        .users-wrapper {
+            height: 100vh;
+            width: 250px;
+            background-color: #15baba;
+            border-radius: 5px;
+
+        }
+
+        .news-wrapper {
+            height: 100vh;
+            width: 250px;
+            background-color: darkgray;
+            border-radius: 5px;
+
+        }
+
+        .post-wrapper {
+            overflow-y: auto;
+            height: 800px;
+            width: 800px;
+        }
+
+        .status-wrapper {
+            z-index: 50;
+            width: 40%;
+            margin: 0 auto;
+        }
+    </style>
+
+    <div class="all-wrapper d-flex justify-content-around">
+
+        {# new #}
+        <div class="users-wrapper">
+            <div class="status-wrapper d-flex justify-content-center">
+                <div class="mr-auto ml-auto position-relative d-flex justify-content-center">
+                    <div class="ml-auto mr-auto pt-4 pr-4 pb-4 pl-4" style="background-color: #EFC050;">
+                        <a class="text-center text-black" href="{{ path('create_post') }}">Send everyone your status
+                            today
+                            <span class="text-success">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="people-wrapper text-center mb-4 mt-4">
+                <a href="#" class="text-black">
+                    Other people
+                    <i class="fa-solid fa-user-group"></i>
+                </a>
+                {% if app.user %}
+                    <ul class="list-group list-group-light overflow-hidden mt-4">
+                        {% for user in users %}
+                            {% if user.profileImg != app.user.profileImg
+                                and user.name != app.user.name and user.email != app.user.email %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="ms-3 d-flex align-content-center">
+                                            <img src="{{ user.profileImg }}" alt="Avatar"
+                                                 style="width: 35px; height: 35px"
+                                                 class="rounded-circle mr-2"/>
+                                            <p class="fw-bold mb-0 mt-2" style="font-size: 14px;">{{ user.name }}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+
+        </div>
+
+        <div class="post-wrapper">
+
+            {% if app.user %}
+                {% for post in posts %}
+                    <div class="page-content page-container mx-auto mt-4" id="page-content">
+                        <div class="padding">
+                            <div class="row container d-flex justify-content-center mx-auto">
+                                <div class="col-md-8 bg-white rounded postbox">
+                                    <div class="box box-widget w-100 bg-white">
+                                        <div class="box-header with-border">
+                                            <div class="user-block mt-2">
+                                                <img class="img-circle rounded-circle img-fluid"
+                                                     src="{{ post.user.profileImg }}"
+                                                     style="width: 50px; height: 50px"
+                                                     alt="User Image"> <span class="username"><a href="#"
+                                                                                                 data-abc="true">
+                                        {{ post.user.name }}
+                                    </a></span> <span class="description">
+                                    {{ post.createAt|date('F j, Y, g:i a') }}
+                                </span></div>
+                                            <div class="box-tools d-flex justify-content-end mb-3">
+                                                <a href="{{ path('detail_post', {'id': post.id }) }}"
+                                                   class="btn btn-info ml-1 mr-1 text-white">
+                                                    Detail
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="box-body">
+                                            <p>{{ post.description }}</p>
+                                            <img class="img-responsive w-100 mt-2 mb-3" src="{{ post.imgPath }}"
+                                                 alt="Photo">
+                                            <button type="button" class="btn btn-default btn-xs"><i
+                                                        class="fa fa-share"></i>
+                                                Share
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-xs"><i
+                                                        class="fa fa-thumbs-o-up"></i> Like
+                                            </button>
+                                            <span class="pull-right text-muted">127 likes - 3 comments</span>
+                                            <span class="pull-right text-muted">
+                                                <strong> #{{ post.tag.name }}</strong>
+                                            </span>
+                                        </div>
+                                        <div class="box-footer box-comments mt-4 mb-4">
+                                        </div>
+                                        <div class="box-footer mt-4 mb-4">
+                                            <form action="#" method="post"><img class="img-responsive img-circle img-sm"
+                                                                                src="https://img.icons8.com/color/36/000000/administrator-male.png"
+                                                                                alt="Alt Text">
+                                                <div class="img-push"><input type="text" class="form-control input-sm"
+                                                                             placeholder="Press enter to post comment">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {# tag #}
+        <div class="news-wrapper text-center">
+            <div class="news bg-dark bg-opacity-50">
+                <a href="{{ path('neon_news') }}" class="text-warning">News to day <i
+                            class="fa-solid fa-newspaper"></i></a>
+            </div>
+            <div class="tags bg-info bg-opacity-75">
+                <a href="{{ path('neon_tags') }}" class="text-danger text-opacity-50">Hot trend topics <i
+                            class="fa-solid fa-hashtag"></i></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
